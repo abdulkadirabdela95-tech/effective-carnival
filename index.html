@@ -1,0 +1,220 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ayub Learning Academy Exam</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #eef3f9;
+    margin: 0;
+    padding: 15px;
+}
+
+header {
+    background: #123b70;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.exam {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+}
+
+button {
+    background: #123b70;
+    color: white;
+    border: none;
+    padding: 12px;
+    margin: 5px;
+    border-radius: 7px;
+}
+
+.option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #e8eff8;
+    color: #123b70;
+}
+
+.selected {
+    background: #b8d4fa;
+}
+
+#result {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Ayub Learning Academy</h1>
+<p>Grade 11 Biology Examination</p>
+</header>
+
+<div class="exam" id="exam">
+
+<h3 id="number"></h3>
+<p id="question"></p>
+
+<div id="options"></div>
+
+<p id="progress"></p>
+
+<button onclick="previous()">Previous</button>
+<button onclick="next()">Next</button>
+<button onclick="submitExam()">Submit Exam</button>
+
+</div>
+
+<div class="exam" id="result" style="display:none"></div>
+
+<script>
+
+const questions = [
+{
+q:"Which organelle produces most ATP?",
+o:["Ribosome","Mitochondrion","Nucleus","Golgi body"],
+a:1
+},
+{
+q:"Which molecule carries genetic information?",
+o:["DNA","Glucose","Water","Lipid"],
+a:0
+},
+{
+q:"What is the basic unit of life?",
+o:["Tissue","Organ","Cell","System"],
+a:2
+},
+{
+q:"Which organelle performs photosynthesis?",
+o:["Nucleus","Chloroplast","Ribosome","Lysosome"],
+a:1
+},
+{
+q:"Which gas is released during photosynthesis?",
+o:["Carbon dioxide","Nitrogen","Oxygen","Hydrogen"],
+a:2
+},
+{
+q:"Which structure controls cell activities?",
+o:["Nucleus","Cell wall","Vacuole","Ribosome"],
+a:0
+},
+{
+q:"What is the main function of ribosomes?",
+o:["Digestion","Protein synthesis","Respiration","Transport"],
+a:1
+},
+{
+q:"Which process produces two identical daughter cells?",
+o:["Meiosis","Fertilization","Mitosis","Mutation"],
+a:2
+},
+{
+q:"Which substance is the main energy source for cells?",
+o:["Glucose","DNA","Water","Oxygen"],
+a:0
+},
+{
+q:"Which organelle modifies and packages proteins?",
+o:["Golgi apparatus","Nucleus","Chloroplast","Vacuole"],
+a:0
+}
+];
+
+let current = 0;
+let answers = Array(questions.length).fill(-1);
+
+function showQuestion() {
+
+let q = questions[current];
+
+document.getElementById("number").innerText =
+"Question " + (current + 1) + " of " + questions.length;
+
+document.getElementById("question").innerText = q.q;
+
+let html = "";
+
+q.o.forEach((option, i) => {
+
+html += `<button class="option ${
+answers[current] === i ? "selected" : ""
+}" onclick="choose(${i})">
+${String.fromCharCode(65+i)}. ${option}
+</button>`;
+
+});
+
+document.getElementById("options").innerHTML = html;
+
+document.getElementById("progress").innerText =
+"Answered: " + answers.filter(x => x !== -1).length
++ " / " + questions.length;
+
+}
+
+function choose(i) {
+answers[current] = i;
+showQuestion();
+}
+
+function next() {
+if (current < questions.length - 1) {
+current++;
+showQuestion();
+}
+}
+
+function previous() {
+if (current > 0) {
+current--;
+showQuestion();
+}
+}
+
+function submitExam() {
+
+let score = 0;
+
+questions.forEach((q, i) => {
+if (answers[i] === q.a) {
+score++;
+}
+});
+
+document.getElementById("exam").style.display = "none";
+
+let result = document.getElementById("result");
+
+result.style.display = "block";
+
+result.innerHTML = `
+<h2>Examination Completed!</h2>
+<h1>${score} / ${questions.length}</h1>
+<p>Percentage: ${score * 10}%</p>
+<p>${score >= 5 ? "You passed!" : "Keep practicing!"}</p>
+<button onclick="location.reload()">Retake Exam</button>
+`;
+
+}
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
